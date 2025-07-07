@@ -103,7 +103,7 @@ Download the latest AUDITOR version (here we copy it from zenodo), unzip and cha
 
 ```
 cd /tmp/
-curl https://zenodo.org/records/15827317/preview/AUDITOR-0.9.4.zip --output AUDITOR-0.9.4.zip
+curl https://zenodo.org/records/15827317/files/AUDITOR-0.9.4.zip --output AUDITOR-0.9.4.zip
 
 
 
