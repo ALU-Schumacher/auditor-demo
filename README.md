@@ -649,6 +649,8 @@ Out[6]:
 ```
 ```
 print(json.dumps(json.loads(records[13].to_json()),indent=3))
+```
+```
 {
    "components": [
       {
