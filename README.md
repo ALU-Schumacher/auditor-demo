@@ -103,9 +103,12 @@ Download the latest AUDITOR version (here we copy it from zenodo), unzip and cha
 
 ```
 cd /tmp/
-curl https://zenodo.org/records/15260518/files/AUDITOR-0.9.2.zip --output AUDITOR-0.9.2.zip
-unzip AUDITOR-0.9.2.zip 
-cd AUDITOR-0.9.2
+curl https://zenodo.org/records/15827317/preview/AUDITOR-0.9.4.zip --output AUDITOR-0.9.4.zip
+
+
+
+unzip AUDITOR-0.9.4.zip 
+cd AUDITOR-0.9.4
 ```
 Now execute the two migration scripts:
 
