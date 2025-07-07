@@ -150,15 +150,15 @@ yum install auditor auditor_apel_plugin auditor_htcondor_collector
 
 
 ### Configure AUDITOR main component
-First create an auditor folder and config file:
+Adjust the auditor config file as follows:
 ```
-mkdir /opt/auditor/
-vi /opt/auditor/config.yml 
+vi /opt/auditor/auditor.yml
 ```
 with the following content:
 ```
 application:
-  addr: [0.0.0.0]
+  addr:
+    - 0.0.0.0
   port: 8000
 database:
   host: "localhost"
@@ -179,26 +179,7 @@ log_level: info
 tls_config:
   use_tls: false
 ```
-In order to run auditor as service we need to create a unit-file:
-```
-vim /etc/systemd/system/auditor.service 
-```
-and add the following content:
-```
-[Unit]
-Description=AUDITOR
-Documentation=https://alu-schumacher.github.io/AUDITOR/
-
-[Service]
-Type=simple
-User=root
-Group=root
-WorkingDirectory=/opt/auditor
-ExecStart=/usr/bin/auditor /opt/auditor/config.yml
-Restart=on-failure
-RestartSec=60
-```
-start the service with
+Now you can start the service with the following command:
 ```
 systemctl start auditor.service
 ```
@@ -468,9 +449,7 @@ if not, restart with `condor_restart` and check again.
 ### Install pyauditor and other modules - required to create the mock data
 
 Now we can download this git repo with the mock_history_insertion.py script.
-E.g. we can place it to \tmp\
 ```
-cd \tmp
 git clone https://github.com/ALU-Schumacher/auditor-demo.git
 ```
 
@@ -486,7 +465,7 @@ pip install -r requirements.txt
 ```
 Now we can create the pseudo-condor data:
 ```
-python \tmp\auditor-demo\mock_history_insertion.py
+python auditor-demo\mock_history_insertion.py
 ```
 afterwards we can deactivate the env again:
 ```
@@ -513,19 +492,20 @@ Nice! Data is in condor. Now we can run the condor-collector (or wait until the 
 Here we are impatient, we  want to execute the collector manually.
 Therefore we can call:
 ```
-/opt/auditor_htcondor_collector/venv/bin/python /opt/auditor_htcondor_collector/venv/bin/auditor-htcondor-collector --config /opt/auditor_htcondor_collector/auditor_htcondor_collector.yml
+/opt/auditor_htcondor_collector/venv/bin/python /opt/auditor_htcondor_collector/venv/bin/auditor-htcondor-collector --config /opt/auditor_htcondor_collector/auditor_htcondor_collector.yml --job-id  0.0
 ```
 you should see something like:
 ```
-/opt/auditor_htcondor_collector/venv/bin/python /opt/auditor_htcondor_collector/venv/bin/auditor-htcondor-collector --config /opt/auditor_htcondor_collector/auditor_htcondor_collector.yml
+/opt/auditor_htcondor_collector/venv/bin/python /opt/auditor_htcondor_collector/venv/bin/auditor-htcondor-collector --config /opt/auditor_htcondor_collector/auditor_htcondor_collector.yml --job-id  0.0
 
-2025-04-30 15:08:37,440 - auditor.collectors.htcondor - INFO     - Using AUDITOR client at localhost:8000.
-2025-04-30 15:08:37,441 - auditor.collectors.htcondor - INFO     - Using timeout of 10 seconds for AUDITOR client.
-2025-04-30 15:08:37,505 - auditor.collectors.htcondor - INFO     - Starting collector run.
-2025-04-30 15:08:37,505 - auditor.collectors.htcondor - INFO     - Collecting jobs for schedd 'auditor-demo.novalocal'.
-2025-04-30 15:08:37,506 - auditor.collectors.htcondor - WARNING  - Could not find last job id for schedd 'auditor-demo.novalocal' and record prefix 'htcondor'. Starting from timestamp.
-2025-04-30 15:09:55,063 - auditor.collectors.htcondor - INFO     - Added 999 records.
-2025-04-30 15:09:55,065 - auditor.collectors.htcondor - INFO     - Collector run finished.
+
+2025-07-07 13:39:42,890 - auditor.collectors.htcondor - INFO     - Using AUDITOR client at localhost:8000.
+2025-07-07 13:39:42,890 - auditor.collectors.htcondor - INFO     - Using timeout of 10 seconds for AUDITOR client.
+2025-07-07 13:39:42,892 - auditor.collectors.htcondor - INFO     - Starting collector run.
+2025-07-07 13:39:42,892 - auditor.collectors.htcondor - INFO     - Collecting jobs for schedd 'auditor-demo.novalocal'.
+2025-07-07 13:39:49,813 - auditor.collectors.htcondor - INFO     - Added 999 records.
+2025-07-07 13:39:49,816 - auditor.collectors.htcondor - INFO     - Collector run finished.
+
 ```
 Just interrupt the command with `Strg+c`.
 
