@@ -582,34 +582,40 @@ ipython
 ```
 Import required modules
 ```
-In [1]: import numpy as np
-   ...: import datetime
-   ...: import json
-   ...: from pyauditor import AuditorClientBuilder, Value, Operator, QueryBuilder
+import numpy as np
+import datetime
+import json
+from pyauditor import AuditorClientBuilder, Value, Operator, QueryBuilder
 ```
 Connect to AUDITOR
 
 ```
-In [2]: builder = AuditorClientBuilder()
-   ...: builder = builder.address("127.0.0.1", 8000)
-   ...: client = builder.build()
+builder = AuditorClientBuilder()
+builder = builder.address("127.0.0.1", 8000)
+client = builder.build()
 ```
 Create a proper query using the pyauditor QueryBuilder:
 ```
-In [3]: start = datetime.datetime(2025,5 , 1, tzinfo=datetime.timezone.utc)
-   ...: # Set the datetime value in Utc using Value object
-   ...: value = Value.set_datetime(start)
-   ...: query_string = QueryBuilder().with_stop_time(Operator().gte(value)).build()
-   ...: query_string
+now = datetime.datetime.now()
+start = datetime.datetime(now.year,now.month , 1, tzinfo=datetime.timezone.utc)
+# Set the datetime value in Utc using Value object
+value = Value.set_datetime(start)
+query_string = QueryBuilder().with_stop_time(Operator().gte(value)).build()
+query_string
+```
+```
 Out[3]: 'stop_time[gte]=2025-05-01T00%3A00%3A00%2B00%3A00'
 ```
 Execute the query:
 ```
-In [4]: records = await client.advanced_query(query_string)
+records = await client.advanced_query(query_string)
 ```
 Now you can have a look at the data (first 10 records):
 ```
-In [5]: records[:10]
+records[:10]
+```
+
+```
 Out[5]: 
 [Record { record_id: "record-13", meta: Some(Meta({"group_id": ["group_1"], "site_id": ["site_3"], "user_id": ["user-13"]})), components: Some([Component { name: ValidName("cpu"), amount: ValidAmount(16), scores: [Score { name: ValidName("hepspec23"), value: ValidValue(10.0) }] }, Component { name: ValidName("mem"), amount: ValidAmount(3072), scores: [] }]), start_time: Some(2025-05-01T00:13:00Z), stop_time: Some(2025-05-01T01:13:00Z), runtime: Some(3600) },
  Record { record_id: "record-49", meta: Some(Meta({"group_id": ["group_3"], "user_id": ["user-49"], "site_id": ["site_2"]})), components: Some([Component { name: ValidName("cpu"), amount: ValidAmount(4), scores: [Score { name: ValidName("hepspec23"), value: ValidValue(10.0) }] }, Component { name: ValidName("mem"), amount: ValidAmount(4096), scores: [] }]), start_time: Some(2025-05-01T00:49:00Z), stop_time: Some(2025-05-01T01:49:00Z), runtime: Some(3600) },
@@ -624,8 +630,10 @@ Out[5]:
 ```
 If you want to use the data for further analysis, you can transform the records it a json-object
 ```
-In [6]: # transform record into json
-   ...: json.loads(records[0].to_json())
+# transform record into json
+json.loads(records[0].to_json())
+```
+```
 Out[6]: 
 {'components': [{'amount': 16,
    'name': 'cpu',
@@ -638,8 +646,9 @@ Out[6]:
  'runtime': 3600,
  'start_time': '2025-05-01T00:13:00Z',
  'stop_time': '2025-05-01T01:13:00Z'}
-
-In [7]: print(json.dumps(json.loads(records[13].to_json()),indent=3))
+```
+```
+print(json.dumps(json.loads(records[13].to_json()),indent=3))
 {
    "components": [
       {
